@@ -1,0 +1,311 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>웹소설 플랫폼</title>
+  <style>
+    /* 기본 스타일 설정 */
+    body {
+      font-family: 'Arial', sans-serif;
+      margin: 0;
+      padding: 0;
+      background-color: #f4f4f9;
+      display: flex;
+      justify-content: center; /* 중앙 정렬 */
+      align-items: flex-start; /* 상단으로 정렬 */
+      min-height: 100vh; /* 화면 최소 높이 100% */
+      flex-direction: column;
+    }
+
+    header, main, footer {
+      width: 100%;
+      max-width: 1200px; /* 최대 너비 설정 */
+      margin: 0 auto; /* 중앙 정렬 */
+      padding: 20px;
+    }
+
+    header {
+      background-color: #333;
+      color: #fff;
+    }
+
+    nav {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    nav .logo {
+      font-size: 24px;
+      font-weight: bold;
+    }
+
+    nav ul {
+      list-style-type: none;
+      margin: 0;
+      padding: 0;
+      display: flex;
+    }
+
+    nav ul li {
+      margin-left: 20px;
+    }
+
+    nav ul li a {
+      color: #fff;
+      text-decoration: none;
+      font-size: 18px;
+    }
+
+    nav ul li a:hover {
+      text-decoration: underline;
+    }
+
+    main {
+      padding-top: 40px;
+    }
+
+    .intro {
+      position: relative;
+      height: 500px;
+      margin-bottom: 60px;
+      overflow: hidden;
+    }
+
+    .slider-container {
+  position: relative;
+  width: 1200px; /* 배너 전체 너비 */
+  margin: auto;
+  overflow: hidden;
+}
+
+.slider {
+  display: flex;
+  transition: transform 0.5s ease-in-out;
+  width: calc(380px * 6); /* 슬라이드 개수에 맞게 설정 */
+}
+
+.slide {
+  min-width: 380px; /* 개별 슬라이드 크기 */
+  box-sizing: border-box;
+  margin: 10px;
+}
+
+.slide img {
+  width: 100%;
+  height: 490px;
+  border-radius: 10px;
+}
+
+.prev-btn, .next-btn {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  background-color: rgba(0, 0, 0, 0.5);
+  color: white;
+  border: none;
+  padding: 10px;
+  cursor: pointer;
+  font-size: 24px;
+  border-radius: 5px;
+}
+
+.prev-btn { left: 10px; }
+.next-btn { right: 10px; }
+
+.prev-btn:hover, .next-btn:hover {
+  background-color: rgba(0, 0, 0, 0.8);
+}   
+    .latest {
+      margin-top: 60px;
+    }
+
+    .latest h2 {
+      font-size: 28px;
+      margin-bottom: 20px;
+    }
+
+    .latest-container {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+    }
+
+    .works-list {
+      display: flex;
+      gap: 10px;
+      justify-content: start;
+      flex-wrap: wrap;
+      margin-top: 20px; /* works-list와 h2 간격 설정 */
+      margin-bottom: 50px;
+    }
+
+    .work-item {
+      background-color: #fff;
+      margin-right: 10px;
+      width: 150px;
+      height: 300px;
+      border-radius: 8px;
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+      text-align: center;
+    }
+
+    .work-item img {
+      width: 150px;
+      height: 300px;
+      border-radius: 5px;
+    }
+
+    footer {
+      text-align: center;
+      padding: 20px 0;
+      background-color: #333;
+      color: white;
+      margin-top: auto; /* 풋터를 화면 하단에 위치 */
+    }
+
+    /* 슬라이드 효과 */
+    @keyframes fade {
+      0% {
+        opacity: 0;
+        display: none;
+      }
+      20% {
+        opacity: 1;
+        display: block;
+      }
+      33% {
+        opacity: 1;
+        display: block;
+      }
+      50% {
+        opacity: 0;
+        display: none;
+      }
+      100% {
+        opacity: 0;
+        display: none;
+      }
+    }
+
+  </style>
+  <script>
+    document.addEventListener("DOMContentLoaded", function () {
+        const slider = document.querySelector(".slider");
+        const slides = document.querySelectorAll(".slide");
+        const prevBtn = document.querySelector(".prev-btn");
+        const nextBtn = document.querySelector(".next-btn");
+    
+        let index = 0;
+        const visibleSlides = 3; // 한 번에 보이는 슬라이드 개수
+        const slideWidth = slides[0].offsetWidth + 10; // 개별 슬라이드 너비 + 마진 포함
+    
+        function updateSlider() {
+            slider.style.transform = `translateX(-${index * slideWidth}px)`;
+        }
+    
+        nextBtn.addEventListener("click", function () {
+            if (index < slides.length - visibleSlides) {
+                index++;
+            } else {
+                index = 0; // 마지막이면 처음으로 이동
+            }
+            updateSlider();
+        });
+    
+        prevBtn.addEventListener("click", function () {
+            if (index > 0) {
+                index--;
+            } else {
+                index = slides.length - visibleSlides; // 처음이면 마지막으로 이동
+            }
+            updateSlider();
+        });
+    
+        // 자동 슬라이드 기능 추가
+        function autoSlide() {
+            if (index < slides.length - visibleSlides) {
+                index++;
+            } else {
+                index = 0;
+            }
+            updateSlider();
+        }
+    
+        setInterval(autoSlide, 3000); // 3초마다 자동 슬라이드
+    });
+    </script>
+</head>
+<body>
+    <header>
+      <nav>
+        <div class="logo">웹소설 플랫폼</div>
+        <ul>
+          <li><a href="#">홈</a></li>
+          <li><a href="#">장르</a></li>
+          <li><a href="#">마이페이지</a></li>
+          <li><a href="{{ url_for('login') }}">로그인</a></li>
+        </ul>
+      </nav>
+    </header>
+  
+    <main>
+      <section class="intro">
+        <section class="intro">
+          <div class="slider-container">
+            <button class="prev-btn">&#10094;</button> <!-- 왼쪽 화살표 -->
+            <div class="slider">
+              <div class="slide"><a href="/novel/1"><img src="../state/가주.jpg" alt="배너 1"></a></div>
+              <div class="slide"><a href="/novel/2"><img src="../state/극한.jpg" alt="배너 2"></a></div>
+              <div class="slide"><a href="/novel/3"><img src="../state/나혼렙.png" alt="배너 3"></a></div>
+              <div class="slide"> <a href="/novel/4"><img src="../state/백망되.png" alt="배너 4"></a></div>
+              <div class="slide"><a href="/novel/5"><img src="../state/병아리.jpg" alt="배너 5"></a></div>
+              <div class="slide"><a href="/novel/6"><img src="../state/조선.jpg" alt="배너 6"></a></div>
+            </div>
+            <button class="next-btn">&#10095;</button> <!-- 오른쪽 화살표 -->
+          </div>
+        </section>
+      </section>
+  
+      <section class="latest">
+        <div class="latest-container">
+          <h2>최신 작품</h2>
+          <div class="works-list">
+            <div class="work-item">
+              <a href="/novel/1"><img src="../state/가주.jpg" alt="작품 1"></a>
+              
+            </div>
+            <div class="work-item">
+              <a href="/novel/2"><img src="../state/극한.jpg" alt="작품 2"></a>
+             
+            </div>
+            <div class="work-item">
+              <a href="/novel/3"><img src="../state/skghsfpq.jpg" alt="작품 3"></a>
+              
+            </div>
+            <div class="work-item">
+              <a href="/novel/4"><img src="../state/백망되.png" alt="작품 4"></a>
+              
+            </div>
+            <div class="work-item">
+              <a href="/novel/5"><img src="../state/병아리.jpg" alt="작품 5"></a>
+            </div>
+            <div class="work-item">
+              <a href="/novel/6"><img src="../state/조선.jpg" alt="작품 6"></a>
+            </div>
+            <div class="work-item">
+              <a href="/novel/7"><img src="../state/데못죽.jpg" alt="작품 6"></a>
+            </div>
+          </div>
+        </div>
+      </section>
+    </main>
+  
+    <footer>
+      <p>&copy; 2025 웹소설 플랫폼</p>
+    </footer>
+  </body>
+  </html>
+
+
